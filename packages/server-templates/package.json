@@ -1,9 +1,5 @@
 {
   "name": "@fabo/server-templates",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/fpaboim/fabo.git/packages/server-templates"
-  },
   "version": "1.0.3",
   "description": "templates",
   "main": "compile.js",

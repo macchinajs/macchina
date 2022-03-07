@@ -1,9 +1,5 @@
 {
   "name": "@fabo/cli",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/fpaboim/fabo.git/packages/cli"
-  },
   "exports": {
     ".": {
       "import": "./index.js"
