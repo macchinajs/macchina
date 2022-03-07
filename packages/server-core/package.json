@@ -5,7 +5,7 @@
     "url": "git+https://github.com/fpaboim/fabo.git",
     "directory": "packages/server-core"
   },
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "fabo_backend API server",
   "main": "index.js",
   "type": "module",
