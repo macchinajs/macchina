@@ -2,7 +2,8 @@
   "name": "@fabo/cli",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/fpaboim/fabo.git"
+    "url": "git+https://github.com/fpaboim/fabo.git",
+    "directory": "packages/cli"
   },
   "version": "1.0.4",
   "type": "module",

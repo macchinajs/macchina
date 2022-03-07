@@ -2,7 +2,8 @@
   "name": "@fabo/server-templates",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/fpaboim/fabo.git"
+    "url": "git+https://github.com/fpaboim/fabo.git",
+    "directory": "packages/server-core"
   },
   "version": "1.0.4",
   "description": "templates",
