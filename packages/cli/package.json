@@ -2,8 +2,7 @@
   "name": "@fabo/cli",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/fpaboim/fabo",
-    "directory": "packages/cli"
+    "url": "git+https://github.com/fpaboim/fabo.git/packages/cli"
   },
   "exports": {
     ".": {
@@ -11,7 +10,7 @@
     },
     "./package.json": "./package.json"
   },
-  "version": "1.0.2",
+  "version": "1.0.3",
   "type": "module",
   "description": "fabo framework creation cli",
   "main": "src/cli.js",
