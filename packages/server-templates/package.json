@@ -2,7 +2,7 @@
   "name": "@macchina/server-templates",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/fpaboim/macchinajs.git",
+    "url": "git+https://github.com/macchinajs/macchina.git",
     "directory": "packages/server-core"
   },
   "version": "0.0.1",
