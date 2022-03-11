@@ -1,11 +1,11 @@
 {
-  "name": "@fabo/server-templates",
+  "name": "@macchina/server-templates",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/fpaboim/fabo.git",
+    "url": "git+https://github.com/fpaboim/macchinajs.git",
     "directory": "packages/server-core"
   },
-  "version": "1.0.4",
+  "version": "0.0.1",
   "description": "templates",
   "main": "compile.js",
   "type": "module",

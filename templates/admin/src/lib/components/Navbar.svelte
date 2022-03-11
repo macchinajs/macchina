@@ -13,7 +13,7 @@
   </div>
   <div class="px-2 mx-2 navbar-start">
     <span class="text-lg font-bold">
-      <a href="/">fabojs</a>
+      <a href="/">macchinajs</a>
     </span>
   </div>
   <div class="navbar-end">

@@ -1,4 +1,4 @@
-<h1 align="center">fabo serverless framework</h1>
+<h1 align="center">macchina serverless framework</h1>
 <h3 align="center">Build scalable serverless APIs in minutes, not days.</h3>
 
 Easy backend serverless yaml based REST API generator, which aims to replace a lot of the boilerplate which goes along with creating jamstack mobile/web apps.
@@ -7,9 +7,9 @@ Easy backend serverless yaml based REST API generator, which aims to replace a l
 ![raptors, beware!](./assets/raptors.jpg "The raptor fences are down")
 
 ## Introduction
-fabo is a small serverless framework for auto generating rest api's on top of a yaml configurations. It was made out of necessity of reducing boilerplate and being able to provide sensible defaults for scaffolding serverless + mongodb projects.
+macchina is a small serverless framework for auto generating rest api's on top of a yaml configurations. It was made out of necessity of reducing boilerplate and being able to provide sensible defaults for scaffolding serverless + mongodb projects.
 
-feedback @[publicbuilds](https://www.publicbuilds.com)(which is built with fabo): https://www.publicbuilds.com/builds/fpaboim/FABOjs
+feedback @[publicbuilds](https://www.publicbuilds.com)(which is built with macchina): https://www.publicbuilds.com/builds/fpaboim/macchinajs
 
 ## Features
 - [x] Serverless
@@ -23,8 +23,8 @@ feedback @[publicbuilds](https://www.publicbuilds.com)(which is built with fabo)
 ## Instructions
 - Install the latest version of mongodb 4.4+ if not already installed
 - Install serverless and login for deploying the serverless backend ``npm install -g serverless`` or with pnpm ``pnpm add -g serverless``
-- Install fabo ``npm install -g fabo`` or with pnpm ``pnpm add -g fabo``
-- To create a project in the current directory ``fabo init`` or to make a new directory with your project files ``fabo init newdirectory``
+- Install macchina ``npm install -g @macchina/cli`` or with pnpm ``pnpm add -g @macchina/cli``
+- To create a project in the current directory ``macchina init`` or to make a new directory with your project files ``macchina init newdirectory``
 
 ## Guide
 
@@ -311,7 +311,7 @@ export default methods
 ```
 
 ### Querying the API
-fabo uses the awesome [api-query-params](https://github.com/loris/api-query-params) to parse query strings and assist in build your mongodb queries with ease.
+macchina uses the awesome [api-query-params](https://github.com/loris/api-query-params) to parse query strings and assist in build your mongodb queries with ease.
 
 Example query:
 ```
@@ -595,7 +595,7 @@ https://aws.amazon.com/blogs/networking-and-content-delivery/amazon-s3-amazon-cl
 Defines constants which your API and schema have access to, like roles and enums.
 
 ### Client
-fabo currently was built with svelte kit in mind, but a general schema to integrate with any client side framework in on the roadmap.
+macchina currently was built with svelte kit in mind, but a general schema to integrate with any client side framework in on the roadmap.
 
 ## Securing your server
 - Per ip rate limiting with AWS WAF: https://docs.aws.amazon.com/waf/latest/developerguide/how-aws-waf-works.html
@@ -611,7 +611,7 @@ fabo currently was built with svelte kit in mind, but a general schema to integr
 - [ ] Admin
 - [ ] Register KPIs on admin
 - [x] Easier image uploads
-- [ ] fabo config file for configuring different client frameworks
+- [ ] macchina config file for configuring different client frameworks
 - [ ] Page for the docs
 - [x] Validate query parameters
 - [ ] Alias endpoints with different config

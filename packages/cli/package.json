@@ -1,13 +1,13 @@
 {
-  "name": "@fabo/cli",
+  "name": "@macchina/cli",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/fpaboim/fabo.git",
+    "url": "git+https://github.com/fpaboim/macchinajs.git",
     "directory": "packages/cli"
   },
-  "version": "1.0.4",
+  "version": "0.0.1",
   "type": "module",
-  "description": "fabo framework creation cli",
+  "description": "Macchina framework commandline interface",
   "main": "src/cli.js",
   "publishConfig": {
     "access": "public"
@@ -17,8 +17,12 @@
   },
   "keywords": [
     "cli",
-    "fabo"
+    "macchina",
+    "macchinajs"
   ],
+  "bin": {
+    "macchina": "./bin/macchina.js"
+  },
   "files": [
     "bin/",
     "src/",
@@ -27,7 +31,7 @@
   "author": "fpaboim",
   "license": "MIT",
   "dependencies": {
-    "@fabo/server-templates": "workspace:*",
+    "@macchina/server-templates": "workspace:*",
     "arg": "^5.0.1",
     "chalk": "^4.1.2",
     "esm": "^3.2.25",

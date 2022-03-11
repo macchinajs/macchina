@@ -5,7 +5,7 @@ import path from 'path';
 import { promisify } from 'util';
 import execa from 'execa';
 import Listr from 'listr';
-import { compile } from '@fabo/server-templates'
+import { compile } from '@macchina/server-templates'
 
 const access = promisify(fs.access);
 const copy = promisify(ncp);
@@ -20,7 +20,7 @@ function filterfunc(source) {
   if (source.includes('.git')
    || source.includes('.webpack')
    || source.includes('.svelte-kit')
-   || source.includes('.fabo')
+   || source.includes('.macchina')
    || source.includes('.log')
    || source.includes('node_modules')) {
     return false

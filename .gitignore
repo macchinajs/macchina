@@ -1,7 +1,7 @@
 .DS_Store
 /node_modules/*
 **/node_modules/*
-/fabo/.shared/*
+/macchina/.shared/*
 /client/packages/*
 /server/packages/*
 *.log*

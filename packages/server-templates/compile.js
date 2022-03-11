@@ -29,7 +29,7 @@ function filterfunc(source) {
   if (source.includes('.git')
    || source.includes('.webpack')
    || source.includes('.svelte-kit')
-   || source.includes('.fabo')
+   || source.includes('.macchina')
    || source.includes('.log')
    || source.includes('node_modules')) {
     return false
@@ -57,15 +57,15 @@ export const compile = async (optionsIn) => {
       ...defaultOptions,
       optionsIn
     }
-    console.log("Fabo is working... 🏋️")
+    console.log("Macchina is working... 🏎️")
     console.log("Scaffolding...")
     const serverBase = options.serverDir
     const clientBase = options.clientDir
     const adminBase  = options.adminDir
 
 
-    rimraf.sync(serverBase+'.fabo/');
-    rimraf.sync(clientBase+'.fabo/');
+    rimraf.sync(serverBase+'.macchina/');
+    rimraf.sync(clientBase+'.macchina/');
     rimraf.sync(adminBase);
     scaffoldProject(serverBase, clientBase)
 
@@ -87,7 +87,7 @@ export const compile = async (optionsIn) => {
         console.log("Creating admin...")
         fs.mkdirSync(adminBase, { recursive: true });
         await copyAdminTemplate(adminTemplateDir, adminBase)
-        copyFolder(clientBase+'.fabo/', adminBase+'src/lib/.fabo/')
+        copyFolder(clientBase+'.macchina/', adminBase+'src/lib/.macchina/')
         fs.renameSync(adminBase+'env.development', '.env.development');
         const result = await execa('pnpm', ['i'], {
           cwd: adminBase,

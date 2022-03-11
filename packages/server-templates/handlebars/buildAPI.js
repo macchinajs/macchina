@@ -439,9 +439,9 @@ export default function compileAPIs(apis, clientBase, serverBase) {
 
       const apiMethods = './models/'+modelName+'/methods.js'
       if (fs.existsSync(apiMethods)) {
-        createDirIfNone(serverBase+'.fabo/models/'+modelName)
+        createDirIfNone(serverBase+'.macchina/models/'+modelName)
         fs.copyFileSync(apiMethods,
-                        serverBase+'.fabo/models/'+modelName+'/methods.js')
+                        serverBase+'.macchina/models/'+modelName+'/methods.js')
         controllers.push({
           name: modelName,
           default: false
@@ -451,13 +451,13 @@ export default function compileAPIs(apis, clientBase, serverBase) {
       if (Object.keys(api).length > 0) {
         let file_loc = new URL('../templates/api.hbs', import.meta.url)
         const apiTemplate = fs.readFileSync(file_loc, 'utf8');
-        createDirIfNone(serverBase+'.fabo/models/'+modelName)
+        createDirIfNone(serverBase+'.macchina/models/'+modelName)
 
         if (hasDefaultEntries(api)) {
           const compiledApiTpl = Handlebars.compile(apiTemplate, { noEscape: true });
 
           const mongooseOut = compiledApiTpl({name: modelName, apiEntries: api, querySettings: querysettings})
-          fs.writeFileSync(serverBase+'.fabo/models/'+modelName+'/api.js', mongooseOut);
+          fs.writeFileSync(serverBase+'.macchina/models/'+modelName+'/api.js', mongooseOut);
           controllers.push({
             name: modelName,
             default: true
@@ -469,7 +469,7 @@ export default function compileAPIs(apis, clientBase, serverBase) {
         const apiHooks = './models/'+modelName+'/apiHooks.js'
         if (fs.existsSync(apiHooks))
           fs.copyFileSync(apiHooks,
-                          serverBase+'.fabo/models/'+modelName+'/apiHooks.js')
+                          serverBase+'.macchina/models/'+modelName+'/apiHooks.js')
       }
     }
 
@@ -477,7 +477,7 @@ export default function compileAPIs(apis, clientBase, serverBase) {
     const routerTemplate = fs.readFileSync(file_loc, 'utf8');
     const builtRouter = Handlebars.compile(routerTemplate, { noEscape: true });
     const mongooseOut = builtRouter({models, routerEntries, controllers})
-    fs.writeFileSync(serverBase+'.fabo/router.js', mongooseOut);
+    fs.writeFileSync(serverBase+'.macchina/router.js', mongooseOut);
 
   } catch(err) {
     console.log('**ERROR**: Template compilation error:',err)

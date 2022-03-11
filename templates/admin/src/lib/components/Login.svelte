@@ -7,7 +7,7 @@
   import { User, modal } from '../../store/store'
   import { post, setLocalStorage } from '$lib/req_utils'
   import { getErrors } from '$lib/form_utils.js'
-  import userValidators from '$lib/.fabo/models/User/validation.js'
+  import userValidators from '$lib/.macchina/models/User/validation.js'
 
   export let redirect = true
   export let showlogin

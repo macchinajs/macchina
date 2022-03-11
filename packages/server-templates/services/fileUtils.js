@@ -3,19 +3,19 @@ import fse from 'fs-extra'
 
 export const copyProjectFiles = (serverBase, clientBase) => {
   try {
-    copyFolder('./shared', serverBase+'.fabo/shared')
-    copyFolder('./shared', clientBase+'.fabo/shared')
-    // copyFolder('./.fabo/lib/shared', clientBase+'.fabo/shared/lib')
+    copyFolder('./shared', serverBase+'.macchina/shared')
+    copyFolder('./shared', clientBase+'.macchina/shared')
+    // copyFolder('./.macchina/lib/shared', clientBase+'.macchina/shared/lib')
   } catch(err) {
     console.log("ERR:", err)
   }
 }
 export const scaffoldProject = (serverBase, clientBase) => {
   try {
-    createDirIfNone(serverBase+'.fabo/')
-    createDirIfNone(clientBase+'.fabo/')
-    createDirIfNone(serverBase+'.fabo/models/')
-    createDirIfNone(clientBase+'.fabo/models/')
+    createDirIfNone(serverBase+'.macchina/')
+    createDirIfNone(clientBase+'.macchina/')
+    createDirIfNone(serverBase+'.macchina/models/')
+    createDirIfNone(clientBase+'.macchina/models/')
   } catch(err) {
     console.log("ERR:", err)
   }

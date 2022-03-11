@@ -416,28 +416,28 @@ export default function compileSchemas(schemas, clientBase, serverBase) {
       file_loc = new URL('../templates/model.hbs', import.meta.url)
       const modelTemplate = fs.readFileSync(file_loc, 'utf8');
 
-      createDirIfNone(serverBase+'.fabo/models/'+modelName)
-      createDirIfNone(clientBase+'.fabo/models/'+modelName)
+      createDirIfNone(serverBase+'.macchina/models/'+modelName)
+      createDirIfNone(clientBase+'.macchina/models/'+modelName)
 
       const buildMongoose = Handlebars.compile(schemaTemplate, { noEscape: true });
       const mongooseOut = buildMongoose({name: modelName, imports: schema['imports'], schemaEntries})
-      fs.writeFileSync(serverBase+'.fabo/models/'+modelName+'/schema.js', mongooseOut);
+      fs.writeFileSync(serverBase+'.macchina/models/'+modelName+'/schema.js', mongooseOut);
 
       const schemaHooksIn = './models/'+modelName+'/schemaHooks.js'
       const hasHooks = fs.existsSync(schemaHooksIn)
       if (hasHooks)
         fs.copyFileSync(schemaHooksIn,
-                        serverBase+'.fabo/models/'+modelName+'/schemaHooks.js')
+                        serverBase+'.macchina/models/'+modelName+'/schemaHooks.js')
 
       const buildModel = Handlebars.compile(modelTemplate, { noEscape: true });
       const modelInput = {name: modelName, hasHooks, schemaEntries}
       const modelOut = buildModel(modelInput)
-      fs.writeFileSync(serverBase+'.fabo/models/'+modelName+'/index.js', modelOut);
+      fs.writeFileSync(serverBase+'.macchina/models/'+modelName+'/index.js', modelOut);
 
       const buildValidation = Handlebars.compile(validationTemplate, { noEscape: true });
       const validationOut = buildValidation({name: modelName, schemaEntries})
-      fs.writeFileSync(serverBase+'.fabo/models/'+modelName+'/validation.js', validationOut);
-      fs.writeFileSync(clientBase+'.fabo/models/'+modelName+'/validation.js', validationOut);
+      fs.writeFileSync(serverBase+'.macchina/models/'+modelName+'/validation.js', validationOut);
+      fs.writeFileSync(clientBase+'.macchina/models/'+modelName+'/validation.js', validationOut);
     }
   } catch(err) {
     console.log('**ERROR**: Template compilation error:',err)
