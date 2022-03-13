@@ -5,29 +5,14 @@ import mongoose from 'mongoose'
 {{buildSchemas_parseImports this}}
 {{/imports}}
 
-// {{name}} schema
+{{#each schemaEntries}}
+{{#if (ne @key 'imports')}}
+// {{@key}} schema
 ///////////////////////////////////////////////////////////////////////////////
-const schema = {
-{{#schemaEntries}}
-  {{#if (buildSchemas_isNested this)}}
-  {{#if (buildSchemas_isArray data)}}
-  {{name}}: [{
-    {{buildSchemas_parseNested data}}
-  }],
-  {{else}}
-  {{name}}: {
-    {{buildSchemas_parseNested data}}
-  },
-  {{/if}}
-  {{else}}
-  {{name}}: {
-  {{#data}}
-    {{buildSchemas_parseEntry this}}
-  {{/data}}
-  },
-  {{/if}}
-{{/schemaEntries}}
+const {{lowercase @key}}SchemaBase = {
+  {{buildSchemas_parseEntry this}}
 }
 
-const {{name}} = new mongoose.Schema(schema)
-export default {{name}}
+export const {{lowercase @key}}Schema = new mongoose.Schema({{lowercase @key}}SchemaBase)
+{{/if}}
+{{/each}}

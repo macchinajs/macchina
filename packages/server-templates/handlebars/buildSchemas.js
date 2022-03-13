@@ -176,7 +176,7 @@ Handlebars.registerHelper('buildSchemas_parseValidationEntry', function (value) 
       if (!hasVal) {
         continue
       }
-      console.log('key', key)
+      // console.log('key', key)
       res += key + ': [\n'
       res += '      '
       res += getEntryValidationResult(newval, nested)
@@ -205,6 +205,53 @@ Handlebars.registerHelper('buildSchemas_isRequired', function (data) {
     return false
   }
 });
+
+const parseValidation = (value, aux, indentation=2) => {
+  // console.log("IN:", indentation)
+  let baseindent = " ".repeat(indentation)
+  let res = ''
+
+  let keys = []
+  try {
+    keys = Object.keys(value)
+
+    if (keys.length == 0) {
+      return ''
+    }
+  } catch(e) {
+    return ''
+  }
+
+  for (let entry in value) {
+    // console.log("ENTRY:", entry, value[entry], typeof(value[entry]))
+    entry = entry.trim()
+    if (entry === 'default')
+      entry = 'def'
+
+    if (typeof(value[entry]) == 'object' && !Array.isArray(value[entry])) {
+      res += entry+': {\n'.concat(baseindent, '  ')+parseValidation(value[entry], null, indentation + 2)
+      res += '\n'.concat(baseindent, '},\n',baseindent)
+      continue
+    }
+
+    switch (entry) {
+      case 'validations':
+        res += entry+': '+JSON.stringify(value[entry])
+        break
+      default:
+        continue
+    }
+
+    if (entry != keys.slice(-1)[0]) {
+      res += ',\n'.concat(baseindent)
+    } else {
+      // console.log('last')
+    }
+    // console.log('res:', res)
+  }
+  return res
+}
+Handlebars.registerHelper('buildSchemas_parseValidation', parseValidation);
 
 Handlebars.registerHelper('buildSchemas_hasValidationEntries', function (value) {
   let keys = Object.keys(value)
@@ -302,20 +349,41 @@ Handlebars.registerHelper('buildSchemas_parseNested', function (values) {
 });
 
 
-Handlebars.registerHelper('buildSchemas_parseEntry', function (value) {
+const parseEntry = (value, aux, indentation=2) => {
+  // console.log("IN:", indentation)
+  let baseindent = " ".repeat(indentation)
   let res = ''
-  let keys = Object.keys(value)
 
-  if (keys.length == 0) {
+  let keys = []
+  try {
+    keys = Object.keys(value)
+
+    if (keys.length == 0) {
+      return ''
+    }
+  } catch(e) {
     return ''
   }
 
   for (let entry in value) {
+    if (entry == 'imports') {
+      continue
+    }
+    // console.log("ENTRY:", entry, value[entry], typeof(value[entry]))
     entry = entry.trim()
     if (entry === 'default')
       entry = 'def'
 
+    if (typeof(value[entry]) == 'object' && !Array.isArray(value[entry])) {
+      res += entry+': {\n'.concat(baseindent, '  ')+parseEntry(value[entry], null, indentation + 2)
+      res += '\n'.concat(baseindent, '},\n',baseindent)
+      continue
+    }
+
     switch (entry) {
+      case 'enum':
+        res += entry+': '+parseType(value[entry])
+        break
       case 'type':
         res += entry+': '+parseType(value[entry])
         break
@@ -333,23 +401,20 @@ Handlebars.registerHelper('buildSchemas_parseEntry', function (value) {
         res += entry+': '+value[entry]
         break
       default:
-        if (typeof(value[entry]) == 'object' && value[entry].length == 0) {
-          res += entry+': '+JSON.stringify(value[entry])
-        } else {
-          res += entry+': '+value[entry]
-        }
+        res += entry+': '+value[entry]
         break
     }
 
     if (entry != keys.slice(-1)[0]) {
-      res += ',\n    '
+      res += ',\n'.concat(baseindent)
     } else {
       // console.log('last')
     }
     // console.log('res:', res)
   }
   return res
-});
+}
+Handlebars.registerHelper('buildSchemas_parseEntry', parseEntry);
 
 Handlebars.registerHelper('buildSchemas_parseImports', function (value) {
   let res = ''
@@ -393,19 +458,19 @@ export default function compileSchemas(schemas, clientBase, serverBase) {
   try {
     for (let modelName in schemas) {
       let schema = schemas[modelName]
-      let schemaEntries = []
-      for (let key in schema['schema']) {
-        let entry = schema['schema'][key]
-
-        schemaEntries.push({
-          name: key,
-          data: entry
-        })
-      }
-      if (schemaEntries.length == 0) {
-        // console.log('no entries for:', modelName)
-        continue
-      }
+//       let schemaEntries = []
+//       for (let key in schema['schema']) {
+//         let entry = schema['schema'][key]
+//
+//         schemaEntries.push({
+//           name: key,
+//           data: entry
+//         })
+//       }
+//       if (schemaEntries.length == 0) {
+//         // console.log('no entries for:', modelName)
+//         continue
+//       }
 
       let file_loc = new URL('../templates/schema.hbs', import.meta.url)
       const schemaTemplate = fs.readFileSync(file_loc, 'utf8');
@@ -420,7 +485,7 @@ export default function compileSchemas(schemas, clientBase, serverBase) {
       createDirIfNone(clientBase+'.macchina/models/'+modelName)
 
       const buildMongoose = Handlebars.compile(schemaTemplate, { noEscape: true });
-      const mongooseOut = buildMongoose({name: modelName, imports: schema['imports'], schemaEntries})
+      const mongooseOut = buildMongoose({name: modelName, imports: schema['imports'], schemaEntries: schema})
       fs.writeFileSync(serverBase+'.macchina/models/'+modelName+'/schema.js', mongooseOut);
 
       const schemaHooksIn = './models/'+modelName+'/schemaHooks.js'
@@ -430,12 +495,12 @@ export default function compileSchemas(schemas, clientBase, serverBase) {
                         serverBase+'.macchina/models/'+modelName+'/schemaHooks.js')
 
       const buildModel = Handlebars.compile(modelTemplate, { noEscape: true });
-      const modelInput = {name: modelName, hasHooks, schemaEntries}
+      const modelInput = {name: modelName, hasHooks, schemaEntries: schema}
       const modelOut = buildModel(modelInput)
       fs.writeFileSync(serverBase+'.macchina/models/'+modelName+'/index.js', modelOut);
 
       const buildValidation = Handlebars.compile(validationTemplate, { noEscape: true });
-      const validationOut = buildValidation({name: modelName, schemaEntries})
+      const validationOut = buildValidation({name: modelName, schemaEntries: schema})
       fs.writeFileSync(serverBase+'.macchina/models/'+modelName+'/validation.js', validationOut);
       fs.writeFileSync(clientBase+'.macchina/models/'+modelName+'/validation.js', validationOut);
     }

@@ -19,7 +19,7 @@ const access = promisify(fs.access);
 const copy = promisify(ncp);
 
 const defaultOptions = {
-  buildAdmin: true,
+  buildAdmin: false,
   serverDir: './server/',
   adminDir: './admin/',
   clientDir: './client/src/lib/'
