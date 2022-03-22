@@ -6,7 +6,7 @@ import '$lib/.macchina/shared/lib/extendValidators.js'
 {{#each schemaEntries}}
 // {{@key}} schema
 ///////////////////////////////////////////////////////////////////////////////
-export const {{lowercase @key}}Validator = {
+export const {{lowercase @key}}Validators = {
   {{buildSchemas_parseValidation this}}
 }
 {{/each}}
