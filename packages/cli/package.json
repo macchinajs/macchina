@@ -5,7 +5,7 @@
     "url": "git+https://github.com/macchinajs/macchina.git",
     "directory": "packages/cli"
   },
-  "version": "0.0.2",
+  "version": "0.0.3",
   "type": "module",
   "description": "Macchina framework commandline interface",
   "main": "src/cli.js",
