@@ -1,0 +1,9 @@
+{{#each schemaEntries}}
+{{#if (ne @key 'imports')}}
+// {{@key}} schema
+///////////////////////////////////////////////////////////////////////////////
+type {{@key}} {
+  {{buildSchemas_parseGQLEntry this}}
+}
+{{/if}}
+{{/each}}

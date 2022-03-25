@@ -1,0 +1,57 @@
+import { ApolloServer } from 'apollo-server-express'
+import { AuthDirective } from '../auth/authDirective.js'
+import path from 'path'
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
+import fs from 'fs'
+import { makeExecutableSchema } from 'graphql-tools'
+import { mergeTypes, fileLoader } from 'merge-graphql-schemas'
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+const getGQLFile = (name) => {
+  const file = path.join(__dirname, "/models/"+name+"/GQLschema.gql")
+  return fs.readFileSync(file, 'utf-8')
+}
+
+{{#controllers}}
+{{#if default}}
+const {{lowercase name}}Typedef = getGQLFile('{{name}}')
+{{/if}}
+{{/controllers}}
+
+//const schema = makeExecutableSchema({
+//  typeDefs: mergeTypes([
+//    {{#controllers}}
+//    {{#if default}}
+//    {{name}}Typedef, 
+//    {{/if}}
+//    {{/controllers}}
+//  ],{ 
+//    all:true
+//  }),
+//  resolvers,
+//  schemaDirectives: {
+//    auth: AuthDirective
+//  },
+//})
+
+// const server = new ApolloServer({
+//   schema,
+//   formatError: error => {
+//     return {
+//       name: error.name, 
+//       message: error.message.replace('Context creation failed: ', '')
+//     }
+//   },
+//   context: async ({ req }) => {
+//     const token = req.headers['authorization']
+//     return {
+//       User,
+//       Product,
+//       currentUser: await getUser(token, User) || null
+//     }
+//   }
+// });
+
+export default ApolloServer

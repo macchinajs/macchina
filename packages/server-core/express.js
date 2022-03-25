@@ -9,10 +9,6 @@ import compression from 'compression'
 import cors        from "cors"
 import rateLimit   from "express-rate-limit"
 
-// import pino        from "pino-http"
-// const routerpath = process.cwd()+'/server/.macchina/router.js'
-// const router = await import(routerpath)
-
 function initHelmetHeaders(app) {
   // Use helmet to secure Express headers
   app.use(helmet.xssFilter());
@@ -31,7 +27,7 @@ var allowCrossDomain = function(req, res, next) {
     next();
 }
 
-const createApp = (router, services, options) => {
+const createApp = (server, router, services, options) => {
   if (!options) {
     throw Error("NO SERVER OPTIONS SUPPLIED")
   }
@@ -62,6 +58,8 @@ const createApp = (router, services, options) => {
   app.use(express.static('./static'))
   // app.use(pino())
 
+  // server.applyMiddleware({ app });
+
   // Rate limit per function
   const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
@@ -89,6 +87,8 @@ const createApp = (router, services, options) => {
   }
 
   router(app)
+
+  server.applyMiddleware({ app, path: '/gql' });
 
   return app
 }

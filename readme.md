@@ -42,7 +42,8 @@ Example schema:
 ```
 imports:
   uniqid: uniqid
-schema:
+
+User:
   username:
     type     : String
     unique   : false
@@ -614,7 +615,7 @@ macchina currently was built with svelte kit in mind, but a general schema to in
 - [ ] macchina config file for configuring different client frameworks
 - [ ] Page for the docs
 - [x] Validate query parameters
-- [ ] Alias endpoints with different config
+- [-] Alias endpoints with different config
 - [ ] Global query limits config
 - [ ] Tests
 

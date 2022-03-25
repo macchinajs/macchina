@@ -21,7 +21,7 @@ if (result.error) {
 
 // funcs
 ///////////////////////////////////////////////////////////////////////////////
-export function makeHandler(router, services, options) {
+export function makeHandler(server, router, services, options) {
   return async function startApp(mongoose, local=false, ...args) {
     console.log("\n")
     console.log(
@@ -36,7 +36,7 @@ export function makeHandler(router, services, options) {
     let connection = connectToDB(mongoose)
     connection = await connection
     console.log('Connected to DB')
-    let app = createApp(router, services, options)
+    let app = createApp(server, router, services, options)
 
     if (!local) {
       app = serverlessExpress({app})

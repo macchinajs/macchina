@@ -221,6 +221,7 @@ Handlebars.registerHelper('buildAPI_useField', function(settings, defaultField, 
 ///////////////////////////////////////////////////////////////////////////////
 Handlebars.registerPartial('buildAPI_authPartial', `
 {{#if (buildAPI_requiresLogin this)}}
+const user    = req.user
 if (!user) {
   return res.status(400).send({errors: {auth: {message: 'User must be logged in.'}}})
 }
@@ -476,8 +477,15 @@ export default function compileAPIs(apis, clientBase, serverBase) {
     let file_loc = new URL('../templates/router.hbs', import.meta.url)
     const routerTemplate = fs.readFileSync(file_loc, 'utf8');
     const builtRouter = Handlebars.compile(routerTemplate, { noEscape: true });
-    const mongooseOut = builtRouter({models, routerEntries, controllers})
-    fs.writeFileSync(serverBase+'.macchina/router.js', mongooseOut);
+    const routerBuildOutput = builtRouter({models, routerEntries, controllers})
+
+    let apolloFile = new URL('../templates/apollo.hbs', import.meta.url)
+    const apolloTemplate = fs.readFileSync(apolloFile, 'utf8');
+    const apolloBuilt = Handlebars.compile(apolloTemplate, { noEscape: true });
+    const apolloBuildOutput = apolloBuilt({models, routerEntries, controllers})
+
+    fs.writeFileSync(serverBase+'.macchina/router.js', routerBuildOutput);
+    fs.writeFileSync(serverBase+'.macchina/server.js', apolloBuildOutput);
 
   } catch(err) {
     console.log('**ERROR**: Template compilation error:',err)

@@ -11,6 +11,19 @@ import {
 
 // utils
 ///////////////////////////////////////////////////////////////////////////////
+const toGQLType = (inputType) => {
+  switch (inputType) {
+    case 'Id':
+      return 'ID'
+    case 'Mixed':
+      return 'Mixed'
+    case 'Decimal128':
+      return 'Float'
+    default:
+      return inputType
+  }
+}
+
 const toMongooseType = (inputType) => {
   switch (inputType) {
     case 'Id':
@@ -24,6 +37,7 @@ const toMongooseType = (inputType) => {
   }
 }
 
+
 const parseType = (value) => {
   if (typeof(value) == 'object') {
     return '['+toMongooseType(value[0])+']'
@@ -31,6 +45,15 @@ const parseType = (value) => {
     return toMongooseType(value)
   }
 }
+
+const parseTypeGQL = (value) => {
+  if (typeof(value) == 'object') {
+    return '['+toGQLType(value[0])+']'
+  } else if (typeof(value) == 'string') {
+    return toGQLType(value)
+  }
+}
+
 
 const parseValidations = (value, validationTemplate=false, nested=false) => {
   let res = ''
@@ -348,6 +371,72 @@ Handlebars.registerHelper('buildSchemas_parseNested', function (values) {
   return res
 });
 
+const parseGQLEntry = (value, aux, indentation=2) => {
+  // console.log("IN:", indentation)
+  let baseindent = " ".repeat(indentation)
+  let res = ''
+
+  let keys = []
+  try {
+    keys = Object.keys(value)
+
+    if (keys.length == 0) {
+      return ''
+    }
+  } catch(e) {
+    return ''
+  }
+
+  for (let entry in value) {
+    if (entry == 'imports') {
+      continue
+    }
+    // console.log("ENTRY:", entry, value[entry], typeof(value[entry]))
+    entry = entry.trim()
+    if (entry === 'default')
+      entry = 'def'
+
+    if (typeof(value[entry]) == 'object' && !Array.isArray(value[entry])) {
+      res += entry+': {\n'.concat(baseindent, '  ')+parseGQLEntry(value[entry], null, indentation + 2)
+      res += '\n'.concat(baseindent, '},\n',baseindent)
+      continue
+    }
+
+    switch (entry) {
+      case 'enum':
+        res += entry+': '+parseType(value[entry])
+        break
+      case 'type':
+        res += entry+': '+parseType(value[entry])
+        break
+      case 'validations':
+        res += 'validate: [validate({\n      '+parseValidations(value[entry])
+        break
+      case 'ref':
+        res += entry+': '+JSON.stringify(value[entry])
+        break
+      case 'required':
+        res += entry+': '+JSON.stringify(value[entry])
+        break
+      case 'def':
+        entry = 'default'
+        res += entry+': '+value[entry]
+        break
+      default:
+        res += entry+': '+value[entry]
+        break
+    }
+
+    if (entry != keys.slice(-1)[0]) {
+      res += ',\n'.concat(baseindent)
+    } else {
+      // console.log('last')
+    }
+    // console.log('res:', res)
+  }
+  return res
+}
+Handlebars.registerHelper('buildSchemas_parseGQLEntry', parseGQLEntry);
 
 const parseEntry = (value, aux, indentation=2) => {
   // console.log("IN:", indentation)
@@ -475,6 +564,9 @@ export default function compileSchemas(schemas, clientBase, serverBase) {
       let file_loc = new URL('../templates/schema.hbs', import.meta.url)
       const schemaTemplate = fs.readFileSync(file_loc, 'utf8');
 
+      let gqlFile = new URL('../templates/GQLschema.hbs', import.meta.url)
+      const gqlTemplate = fs.readFileSync(gqlFile, 'utf8');
+
       file_loc = new URL('../templates/validation.hbs', import.meta.url)
       const validationTemplate = fs.readFileSync(file_loc, 'utf8');
 
@@ -488,6 +580,10 @@ export default function compileSchemas(schemas, clientBase, serverBase) {
       const mongooseOut = buildMongoose({name: modelName, imports: schema['imports'], schemaEntries: schema})
       fs.writeFileSync(serverBase+'.macchina/models/'+modelName+'/schema.js', mongooseOut);
 
+      const buildGQL = Handlebars.compile(gqlTemplate, { noEscape: true });
+      const gqlOut = buildGQL({name: modelName, imports: schema['imports'], schemaEntries: schema})
+      fs.writeFileSync(serverBase+'.macchina/models/'+modelName+'/GQLschema.gql', gqlOut);
+
       const schemaHooksIn = './models/'+modelName+'/schemaHooks.js'
       const hasHooks = fs.existsSync(schemaHooksIn)
       if (hasHooks)
@@ -500,6 +596,10 @@ export default function compileSchemas(schemas, clientBase, serverBase) {
       fs.writeFileSync(serverBase+'.macchina/models/'+modelName+'/index.js', modelOut);
 
       const buildValidation = Handlebars.compile(validationTemplate, { noEscape: true });
+
+      if (schema.imports) {
+        delete schema.imports
+      }
       const validationOut = buildValidation({name: modelName, schemaEntries: schema})
       fs.writeFileSync(serverBase+'.macchina/models/'+modelName+'/validation.js', validationOut);
       fs.writeFileSync(clientBase+'.macchina/models/'+modelName+'/validation.js', validationOut);

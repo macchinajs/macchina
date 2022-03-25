@@ -23,7 +23,6 @@ const methods = {
       (eq @key 'create'))}}
   {{@key}}: async (req, res, next) => {
     try {
-      const user    = req.user
       let   body    = req.body
       let  bodyKeys = Object.keys(body)
       {{> buildAPI_authPartial entry}}
@@ -48,7 +47,6 @@ const methods = {
       (eq @key 'find'))}}
   {{@key}}: async (req, res, next) => {
     try {
-      const user = req.user
       let  query = req.query
       {{> buildAPI_authPartial entry}}
       {{> buildAPI_preQuery settings=(buildAPI_mergeSettings ../../querySettings entry)}}
@@ -96,7 +94,6 @@ const methods = {
       (eq @key 'findone'))}}
   {{@key}}: async (req, res, next) => {
     try {
-      const user    = req.user
       let query     = req.query
       let queryKeys = Object.keys(query)
       {{> buildAPI_authPartial entry}}
@@ -138,7 +135,6 @@ const methods = {
       (eq @key 'updateone'))}}
   {{@key}}: async (req, res, next) => {
     try {
-      const user    = req.user
       let   body    = req.body
       let  bodyKeys = Object.keys(body)
       let query     = req.query
@@ -167,7 +163,6 @@ const methods = {
       (eq @key 'updatemany'))}}
   {{@key}}: async (req, res, next) => {
     try {
-      const user    = req.user
       let   body    = req.body
       let  bodyKeys = Object.keys(body)
 
@@ -202,7 +197,6 @@ const methods = {
       (eq @key 'count'))}}
   {{@key}}: async (req, res, next) => {
     try {
-      const user = req.user
       let  query = req.query
       {{> buildAPI_authPartial entry}}
       {{> buildAPI_preQuery settings=(buildAPI_mergeSettings ../../querySettings entry)}}
@@ -233,7 +227,6 @@ const methods = {
       (eq @key 'delete'))}}
   {{@key}}: async (req, res, next) => {
     try {
-      const user = req.user
       let  query = req.query
       {{> buildAPI_authPartial entry}}
       {{> buildAPI_preQuery settings=(buildAPI_mergeSettings ../../querySettings entry)}}
