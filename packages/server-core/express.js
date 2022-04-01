@@ -27,7 +27,7 @@ var allowCrossDomain = function(req, res, next) {
     next();
 }
 
-const createApp = (server, router, services, options) => {
+const createApp = (router, services, options) => {
   if (!options) {
     throw Error("NO SERVER OPTIONS SUPPLIED")
   }
@@ -88,7 +88,7 @@ const createApp = (server, router, services, options) => {
 
   router(app)
 
-  server.applyMiddleware({ app, path: '/gql' });
+  // server.applyMiddleware({ app, path: '/gql' });
 
   return app
 }

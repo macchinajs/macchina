@@ -479,13 +479,15 @@ export default function compileAPIs(apis, clientBase, serverBase) {
     const builtRouter = Handlebars.compile(routerTemplate, { noEscape: true });
     const routerBuildOutput = builtRouter({models, routerEntries, controllers})
 
-    let apolloFile = new URL('../templates/apollo.hbs', import.meta.url)
-    const apolloTemplate = fs.readFileSync(apolloFile, 'utf8');
-    const apolloBuilt = Handlebars.compile(apolloTemplate, { noEscape: true });
-    const apolloBuildOutput = apolloBuilt({models, routerEntries, controllers})
+    if (false) {
+      let apolloFile = new URL('../templates/apollo.hbs', import.meta.url)
+      const apolloTemplate = fs.readFileSync(apolloFile, 'utf8');
+      const apolloBuilt = Handlebars.compile(apolloTemplate, { noEscape: true });
+      const apolloBuildOutput = apolloBuilt({models, routerEntries, controllers})
+      fs.writeFileSync(serverBase+'.macchina/server.js', apolloBuildOutput);
+    }
 
     fs.writeFileSync(serverBase+'.macchina/router.js', routerBuildOutput);
-    fs.writeFileSync(serverBase+'.macchina/server.js', apolloBuildOutput);
 
   } catch(err) {
     console.log('**ERROR**: Template compilation error:',err)
