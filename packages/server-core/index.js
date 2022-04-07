@@ -7,7 +7,6 @@ import serverlessExpress from "@vendia/serverless-express"
 
 import connectToDB from "./db/mongo.js"
 import createApp from "./express.js"
-import mongoose from "mongoose"
 
 // Vars
 ///////////////////////////////////////////////////////////////////////////////
@@ -23,7 +22,7 @@ if (result.error) {
 // funcs
 ///////////////////////////////////////////////////////////////////////////////
 export function makeHandler(server, router, services, options) {
-  return async function startApp(local=false, ...args) {
+  return async function startApp(mongoose, local=false, ...args) {
     console.log("\n")
     console.log(
       chalk.bold(
