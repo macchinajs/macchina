@@ -12,11 +12,13 @@ import createApp from "./express.js"
 ///////////////////////////////////////////////////////////////////////////////
 const PORT = 4000
 
-dotenv.config()
-const result = dotenv.config()
+try {
+  const result = dotenv.config()
+} catch(e) {
+}
 
-if (result.error) {
-  throw result.error
+if (result && result.error) {
+  console.log("DOTENV ERROR")
 }
 
 // funcs
