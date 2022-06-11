@@ -9,8 +9,6 @@ Easy backend serverless yaml based REST API generator, which aims to replace a l
 ## Introduction
 macchina is a small serverless framework for auto generating rest api's on top of a yaml configurations. It was made out of necessity of reducing boilerplate and being able to provide sensible defaults for scaffolding serverless + mongodb projects.
 
-feedback @[publicbuilds](https://www.publicbuilds.com)(which is built with macchina): https://www.publicbuilds.com/builds/fpaboim/macchinajs
-
 ## Features
 - [x] Serverless
 - [x] Easy to eject: it's just serverless + express + mongodb
@@ -19,6 +17,7 @@ feedback @[publicbuilds](https://www.publicbuilds.com)(which is built with macch
 - [x] Easy query building and validation
 - [x] Easy client side and server-side schema validation
 - [x] Commandline client for scaffolding
+- [ ] Generate TypeScript Types
 
 ## Instructions
 - Install the latest version of mongodb 4.4+ if not already installed

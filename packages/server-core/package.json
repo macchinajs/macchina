@@ -18,6 +18,7 @@
   "license": "CC",
   "dependencies": {
     "@vendia/serverless-express": "^4.5.4",
+    "chalk": "^4.1.2",
     "compression": "^1.7.4",
     "cors": "^2.8.5",
     "dayjs": "^1.10.8",
@@ -27,12 +28,11 @@
     "helmet": "^4.6.0",
     "helmet-crossdomain": "^0.5.0",
     "jsonwebtoken": "^8.5.1",
-    "mongodb": "^4.4.1",
-    "mongodb-client-encryption": "^1.2.7",
+    "mongodb": "^4.7.0",
+    "mongodb-client-encryption": "^2.1.0",
     "mongoose": "^6.2.9",
     "mongoose-validator": "github:fpaboim/mongoose-validator",
     "netjet": "^1.4.0",
-    "chalk": "^4.1.2",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0"
   },
