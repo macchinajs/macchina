@@ -13,6 +13,8 @@ const connectToDB = async (mongoose) => {
     mongoose.set('autoIndex', false);
   }
 
+  console.log("[mongodb] CONNECTING TO:", process.env.MONGO_URI)
+
   db = await mongoose.connect(process.env.MONGO_URI, {
     "bufferCommands": false
   })

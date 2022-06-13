@@ -61,7 +61,7 @@ async function initGit(options) {
 export async function createProject(options) {
   options = {
     ...options,
-    targetDirectory: options.targetDirectory || process.cwd()
+    targetDirectory: process.cwd()+`/${options.targetDirectory}` || process.cwd()
   };
 
   if (options.compile) {

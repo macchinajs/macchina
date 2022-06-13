@@ -27,7 +27,7 @@
   "author": "Francisco Aboim",
   "license": "CC",
   "dependencies": {
-    "@macchina/server-core": "0.0.9",
+    "@macchina/server-core": "0.0.10",
     "@vendia/serverless-express": "^4.8.2",
     "api-query-params": "^5.3.1",
     "aws-sdk": "^2.1152.0",
