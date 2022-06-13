@@ -5,7 +5,7 @@
     "url": "git+https://github.com/macchinajs/macchina.git",
     "directory": "packages/server-core"
   },
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "Macchina API server core",
   "main": "index.js",
   "type": "module",
