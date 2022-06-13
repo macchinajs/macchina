@@ -64,7 +64,6 @@ export async function createProject(options) {
     targetDirectory: options.targetDirectory || process.cwd()
   };
 
-
   if (options.compile) {
     compile()
     return
@@ -72,7 +71,7 @@ export async function createProject(options) {
 
   const templateDir = path.resolve(
     new URL(import.meta.url).pathname,
-    '../../../../templates',
+    './../../templates',
     TEMPLATES[options.template]
   );
   options.templateDirectory = templateDir;

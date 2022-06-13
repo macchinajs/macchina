@@ -1,0 +1,46 @@
+endpoints:
+  count: true
+  delete:
+    auth:
+      - role: C.ROLES.ADMIN
+  find:
+    query:
+      filter:
+        allow: [post]
+        required: [post]
+  findone: true
+  create:
+    login: true
+    pre:
+      allowFields: [body, post]
+      setFields:
+        - author: user.username
+        - edited: Date.now()
+        - created: Date.now()
+  updateone:
+    login: true
+    auth:
+      - role: C.ROLES.USER
+      - role: C.ROLES.EDITOR
+    query:
+      filter:
+        setFields:
+          - field: author
+            value: user.username
+    pre:
+      allowFields: [body]
+      setFields:
+        - edited: Date.now()
+query:
+  filter:
+    required: [post]
+  skip: true
+  limit:
+    default: 25
+    max: 25
+    min: 1
+  sort:
+    default: "-created"
+  fields: false
+  populate: false
+

@@ -1,0 +1,27 @@
+Comment:
+  body:
+    type     : String
+    unique   : false
+    required: [true, Title is required.]
+    validations:
+      - validator: isLength
+        arguments: [3, 500]
+        message: Comment should be between {ARGS[0]} and {ARGS[1]} characters
+  created:
+    type: Date
+    default: Date.now
+  edited:
+    type: Date
+    default: Date.now
+  deleted:
+    type: Boolean
+    select: false
+    default: false
+  author:
+    type: String
+    required: true
+    ref: User
+  post:
+    type: Id
+    required: true
+    ref: Post

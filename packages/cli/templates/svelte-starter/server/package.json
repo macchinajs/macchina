@@ -1,0 +1,68 @@
+{
+  "name": "macchina_backend",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Macchina API server",
+  "main": "bundle.mjs",
+  "type": "module",
+  "scripts": {
+    "prestart": "mongo admin --eval 'db.shutdownServer()'; mongod --config ./db/mongodb.conf",
+    "build": "rollup --config rollup.config.js",
+    "start": "cross-env NODE_ENV=production node server.js --debug",
+    "dev": "cross-env NODE_ENV=development nodemon server.js --debug",
+    "devsls": "sls offline --stage dev --printOutput start",
+    "dev_cache": "sls offline --stage dev --allowCache --printOutput start",
+    "dev_prod": "sls offline --stage prod --printOutput start",
+    "deploy": "pnpm build; sls deploy --stage prod --verbose",
+    "poststart": "mongo admin --eval 'db.shutdownServer()'"
+  },
+  "nodemonConfig": {
+    "watch": [
+      "./*",
+      "./.macchina/*"
+    ],
+    "ext": ".js, .json, .yaml"
+  },
+  "keywords": [],
+  "author": "Francisco Aboim",
+  "license": "CC",
+  "dependencies": {
+    "@macchina/server-core": "0.0.9",
+    "@vendia/serverless-express": "^4.8.2",
+    "api-query-params": "^5.3.1",
+    "aws-sdk": "^2.1152.0",
+    "bcryptjs": "^2.4.3",
+    "chalk": "^4.1.2",
+    "dotenv": "^10.0.0",
+    "express-rate-limit": "^5.5.1",
+    "jsonwebtoken": "^8.5.1",
+    "mime": "^2.6.0",
+    "mongoose": "^6.3.6",
+    "mongoose-validator": "github:fpaboim/mongoose-validator",
+    "passport": "^0.4.1",
+    "passport-jwt": "^4.0.0",
+    "slugify": "^1.6.5",
+    "uniqid": "^5.4.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.18.2",
+    "@babel/preset-env": "^7.18.2",
+    "@rollup/plugin-babel": "^5.3.1",
+    "@rollup/plugin-commonjs": "^21.1.0",
+    "@rollup/plugin-json": "^4.1.0",
+    "@rollup/plugin-node-resolve": "^13.3.0",
+    "cross-env": "^7.0.3",
+    "faker": "^5.5.3",
+    "lodash": "^4.17.21",
+    "nodemon": "^2.0.16",
+    "rollup": "^2.75.6",
+    "rollup-plugin-copy": "^3.4.0",
+    "rollup-plugin-delete": "^2.0.0",
+    "rollup-plugin-execute": "^1.1.1",
+    "rollup-plugin-node-externals": "^4.0.0",
+    "serverless": "^3.19.0",
+    "serverless-api-gateway-throttling": "^1.2.2",
+    "serverless-dotenv-plugin": "^3.12.2",
+    "serverless-layers": "^2.5.4"
+  }
+}

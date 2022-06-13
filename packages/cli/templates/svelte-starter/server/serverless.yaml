@@ -1,0 +1,98 @@
+app: macchina-back
+service: macchina-api
+name: macchina-api
+useDotenv: true
+
+plugins:
+  - serverless-dotenv-plugin
+
+package:
+  individually: true
+  excludeDevDependencies: true
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  deploymentBucket:
+    - 'fpaboim-macchina'
+  # stage: dev
+  region: us-east-1
+  # CHANGE fpaboim-macchina TO YOUR BUCKET NAME
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "s3:PutObject"
+        - "s3:GetObject"
+      Resource: "*"
+    - Effect: "Allow"
+      Action:
+        - "s3:PutObjectAcl"
+      Resource: arn:aws:s3:::fpaboim-macchina/*
+    - Effect: "Allow"
+      Action:
+        - "s3:ListBucket"
+      Resource: arn:aws:s3:::fpaboim-macchina
+
+custom:
+  # serverless-layers:
+  #   compileDir: .sls_layers
+  #   functions: # optional
+  #     - app
+  #   dependenciesPath: ./package.json
+  #   packageManager: npm
+  #   compatibleRuntimes: ['nodejs14.x']
+  #   customInstallationCommand: "npm i --production; node-prune"
+  #   layersDeploymentBucket: 'macchina-layers'
+  # dependenciesPath: ./package.json
+  # rollup:
+  #   config: rollup.config.js
+  apiGatewayThrottling:
+    maxRequestsPerSecond: 1000
+    maxConcurrentRequests: 500
+  serverless-offline:
+    # noPrependStageInUrl: true
+    # httpsProtocol: "dev-certs"
+    httpPort: 4000
+    host: 0.0.0.0
+
+functions:
+  app:
+    handler: .dist/server.startApp
+    # externals:
+    #   report: .dist/node-externals-report.json
+    package:
+      patterns:
+        - '!**/**'
+        - '.dist/**'
+    # events:
+    #   - http: ANY /
+    #   - http: 'ANY {proxy+}'
+    events:
+      - http:
+          path: /
+          method: ANY
+          cors:
+            origin: '*' # <-- Specify allowed origin
+            headers: # <-- Specify allowed headers
+              - Content-Type
+              - X-Amz-Date
+              - Accept
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+            allowCredentials: true
+      - http:
+          path: /{proxy+}
+          method: ANY
+          cors:
+            origin: '*' # <-- Specify allowed origin
+            headers: # <-- Specify allowed headers
+              - Content-Type
+              - X-Amz-Date
+              - Accept
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+            allowCredentials: true

@@ -24,7 +24,7 @@ function parseArgumentsIntoOptions(rawArgs) {
     git: args['--git'] || false,
     init: args['--init'] || false,
     template: args['--template'] || false,
-    targetDirectory: args._[1] || false,
+    targetDirectory: args._[0] || false,
     runInstall: args['--install'] || false,
   };
 }

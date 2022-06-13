@@ -7,13 +7,14 @@ import serverlessExpress from "@vendia/serverless-express"
 
 import connectToDB from "./db/mongo.js"
 import createApp from "./express.js"
+import path from 'path'
 
 // Vars
 ///////////////////////////////////////////////////////////////////////////////
 const PORT = 4000
 
 try {
-  dotenv.config()
+  dotenv.config({ path: `.env.${process.env.NODE_ENV}` })
 } catch(e) {
   console.log("Dotenv error:", e)
 }
