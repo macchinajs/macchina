@@ -1,0 +1,15 @@
+# npm
+node_modules
+.macchina
+.serverless
+package-lock.json
+*.log
+*.gz
+
+# Coveralls
+.nyc_output
+coverage
+
+# DB
+db/data
+db/logs

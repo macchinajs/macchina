@@ -9,10 +9,11 @@ import mongoose from 'mongoose'
 {{#if (ne @key 'imports')}}
 // {{@key}} schema
 ///////////////////////////////////////////////////////////////////////////////
-const {{lowercase @key}}SchemaBase = {
+const {{@key}}Obj = {
   {{buildSchemas_parseEntry this}}
 }
+const {{@key}} = new mongoose.Schema({{@key}}Obj)
 
-export const {{lowercase @key}}Schema = new mongoose.Schema({{lowercase @key}}SchemaBase)
+export const {{@key}}Schema = new mongoose.Schema({{@key}})
 {{/if}}
 {{/each}}

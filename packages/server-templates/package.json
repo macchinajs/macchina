@@ -5,7 +5,7 @@
     "url": "git+https://github.com/macchinajs/macchina.git",
     "directory": "packages/server-core"
   },
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "templates",
   "main": "compile.js",
   "type": "module",

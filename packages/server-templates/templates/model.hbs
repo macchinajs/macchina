@@ -1,5 +1,5 @@
 import mongoose from 'mongoose'
-import { {{lowercase name}}Schema } from './schema.js'
+import { {{name}}Schema } from './schema.js'
 {{#if hasHooks}}
 import hooks from './schemaHooks.js'
 {{/if}}
@@ -9,12 +9,12 @@ import hooks from './schemaHooks.js'
 ///////////////////////////////////////////////////////////////////////////////
 for (let hook in hooks) {
   for (let hookmethod in hooks[hook]) {
-    {{lowercase name}}Schema[hook](hookmethod, hooks[hook][hookmethod])
+    {{name}}Schema[hook](hookmethod, hooks[hook][hookmethod])
   }
 }
 {{/if}}
 
-const {{name}} = mongoose.model('{{name}}', {{lowercase name}}Schema)
+const {{name}} = mongoose.model('{{name}}', {{name}}Schema)
 export default {{name}}
 
 

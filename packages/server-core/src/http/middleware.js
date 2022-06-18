@@ -1,5 +1,3 @@
-// Imports
-///////////////////////////////////////////////////////////////////////////////
 import path        from 'path'
 import express     from 'express'
 import helmet      from 'helmet'
@@ -8,6 +6,9 @@ import netjet      from 'netjet'
 import compression from 'compression'
 import cors        from "cors"
 import rateLimit   from "express-rate-limit"
+import swaggerUi   from 'swagger-ui-express'
+import swaggerAutogen from 'swagger-autogen';
+import fs from 'fs'
 
 function initHelmetHeaders(app) {
   // Use helmet to secure Express headers
@@ -19,7 +20,7 @@ function initHelmetHeaders(app) {
   app.use(helmet.hidePoweredBy());
 }
 
-var allowCrossDomain = function(req, res, next) {
+const allowCrossDomain = function(req, res, next) {
     // res.header('Access-Control-Allow-Origin', 'https://myproject-front.vercel.app');
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
     res.header('Access-Control-Allow-Headers', 'Content-Type');
@@ -27,17 +28,25 @@ var allowCrossDomain = function(req, res, next) {
     next();
 }
 
-const createApp = (router, services, options) => {
-  if (!options) {
-    throw Error("NO SERVER OPTIONS SUPPLIED")
+async function genSwaggerDocs() {
+  try {
+    console.log('current dir:', process.cwd())
+    const doc = {
+      info: {
+        title: 'Swagger API'
+      }
+    };
+
+    const outputFile = './swagger-output.json';
+    const endpointsFiles = ['./.macchina/router.js'];
+
+    await swaggerAutogen()(outputFile, endpointsFiles, doc)
+  } catch(error) {
+    console.log("genSwaggerDocs error:", error)
   }
+}
 
-  const whitelist = options.whitelist
-
-  if (!whitelist) {
-    throw Error("NO SERVER CORS WHITELIST SUPPLIED")
-  }
-
+export const middleware = async (app, services, whitelist) => {
   const corsOptions = {
     origin: function(origin, callback){
       let originIsWhitelisted = whitelist.indexOf(origin) !== -1;
@@ -46,17 +55,22 @@ const createApp = (router, services, options) => {
     credentials: true
   };
 
-  console.log('Initializing express...')
-  const app = express()
-
-  app.use(compression())
   app.use(netjet())
   app.use(cors(corsOptions))
   // app.options('*', cors());
   app.use(express.json())
   app.use(express.urlencoded({ extended: false }))
   app.use(express.static('./static'))
+  app.use(compression())
   // app.use(pino())
+
+  try {
+    await genSwaggerDocs()
+    const swaggerFile = JSON.parse(fs.readFileSync('./swagger-output.json'));
+    app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerFile));
+  } catch(e) {
+    console.log("swagger docs generation error", e)
+  }
 
   // server.applyMiddleware({ app });
 
@@ -78,20 +92,23 @@ const createApp = (router, services, options) => {
     });
   }
 
-  console.log('Express init done.')
-
   app.use(allowCrossDomain)
 
   for (let service of services) {
     service(app)
   }
 
-  router(app)
+  // Force https in production
+  if (app.get('env') === 'production') {
+    app.use(function(req, res, next) {
+      var protocol = req.get('x-forwarded-proto');
+      protocol == 'https' ? next() : res.redirect('https://' + req.hostname + req.url);
+    });
+  }
+
 
   // server.applyMiddleware({ app, path: '/gql' });
 
   return app
 }
-
-export default createApp;
 

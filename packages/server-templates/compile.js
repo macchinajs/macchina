@@ -76,7 +76,7 @@ export const compile = async (optionsIn) => {
 
     console.log("Compiling Templates...️")
     compileSchemas(schemas, clientBase, serverBase)
-    compileAPIs(apis, clientBase, serverBase)
+    compileAPIs(apis, schemas, clientBase, serverBase)
 
     console.log("Copying files...")
     copyProjectFiles(serverBase, clientBase)

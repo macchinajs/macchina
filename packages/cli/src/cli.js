@@ -1,17 +1,20 @@
 import arg from 'arg';
 import inquirer from 'inquirer';
 import { createProject } from './main.js';
+import package_json from "./../package.json" assert {type: "json"};
 
 
 function parseArgumentsIntoOptions(rawArgs) {
   const args = arg({
     '--compile': Boolean,
+    '--version': Boolean,
     '--git': Boolean,
     '--yes': Boolean,
     '--install': Boolean,
     '--init':    String,
     '--template':    String,
     '-c': '--compile',
+    '-v': '--version',
     '-g': '--git',
     '-y': '--yes',
     '-tpl': '--template',
@@ -20,6 +23,7 @@ function parseArgumentsIntoOptions(rawArgs) {
 
   return {
     compile: args['--compile'] || false,
+    version: args['--version'] || false,
     skipPrompts: args['--yes'] || false,
     git: args['--git'] || false,
     init: args['--init'] || false,
@@ -29,7 +33,16 @@ function parseArgumentsIntoOptions(rawArgs) {
   };
 }
 
+async function getVersion() {
+  return package_json.version
+}
+
 async function promptForMissingOptions(options) {
+  if (options.version) {
+    const version = await getVersion()
+    console.log(`** Macchina cli version: ${version}`)
+    return
+  }
   const defaultTemplate = 'Barebones';
   if (options.skipPrompts) {
     return {

@@ -28,8 +28,8 @@ export async function startApp(...args) {
   // Create express app and connect to db
   let connection = connectToDB()
   console.log("Connected!")
-  let app = createApp()
   connection = await connection
+  let app = await createApp()
 
   app.listen(PORT, () => {
     console.log(`Example app listening at http://localhost:${PORT}`)

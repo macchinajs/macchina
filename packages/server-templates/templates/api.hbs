@@ -131,8 +131,8 @@ const methods = {
 
   {{#each this as |entry|}}
     {{#if (or
-      (or (eq entry.alias 'updateone') (eq entry.type 'updateone'))
-      (eq @key 'updateone'))}}
+      (or (eq entry.alias 'update') (eq entry.type 'update'))
+      (eq @key 'update'))}}
   {{@key}}: async (req, res, next) => {
     try {
       let   body    = req.body
@@ -145,51 +145,17 @@ const methods = {
       {{> buildAPI_preSet entry}}
       {{> buildAPI_preQuery settings=(buildAPI_mergeSettings ../../querySettings entry)}}
       let { filter } = aqp(req.query);
-      const updated = await {{../../name}}.updateOne(filter, body)
+      const updated = await {{../../name}}.update(filter, body)
 
       return res.status(200).send(updated)
     } catch(err) {
-      console.log('** ERROR **: Unknown error on {{../../name}}.updateone', err)
+      console.log('** ERROR **: Unknown error on {{../../name}}.update', err)
       return res.status(400).send({errors: {unknown: {message: 'Unknown error.'}}})
     }
   },
     {{/if}}
   {{/each}}
 
-
-  {{#each this as |entry|}}
-    {{#if (or
-      (or (eq entry.alias 'updatemany') (eq entry.type 'updatemany'))
-      (eq @key 'updatemany'))}}
-  {{@key}}: async (req, res, next) => {
-    try {
-      let   body    = req.body
-      let  bodyKeys = Object.keys(body)
-
-      {{> buildAPI_authPartial entry}}
-      {{> buildAPI_preAllow entry}}
-      {{> buildAPI_preDeny entry}}
-      {{> buildAPI_preSet entry}}
-
-      let { filter } = aqp(req.query);
-      {{#if entry.filters}}
-      filter = {
-        ...filter,
-        {{#each entry.filters}}
-        {{this.field}}: {{this.value}}
-        {{/each}}
-      }
-      {{/if}}
-      const updatemany = await {{../../name}}.updateMany(filter, body)
-
-      return res.status(200).send(updatemany.toObject())
-    } catch(err) {
-      console.log('** ERROR **: Unknown error on {{../../name}}.updatemany', err)
-      return res.status(400).send({errors: {unknown: {message: 'Unknown error.'}}})
-    }
-  },
-    {{/if}}
-  {{/each}}
 
   {{#each this as |entry|}}
     {{#if (or
@@ -212,7 +178,7 @@ const methods = {
 
       const count = await {{../../name}}.count(filter)
 
-      return res.status(200).send(count)
+      return res.status(200).send({count})
     } catch(err) {
       console.log('** ERROR **: Unknown error on {{../../name}}.count', err)
       return res.status(400).send({errors: {unknown: {message: 'Unknown error.'}}})
@@ -223,8 +189,8 @@ const methods = {
 
   {{#each this as |entry|}}
     {{#if (or
-      (or (eq entry.alias 'delete') (eq entry.type 'delete'))
-      (eq @key 'delete'))}}
+      (or (eq entry.alias 'deleteone') (eq entry.type 'deleteone'))
+      (eq @key 'deleteone'))}}
   {{@key}}: async (req, res, next) => {
     try {
       let  query = req.query
@@ -243,7 +209,36 @@ const methods = {
 
       return res.status(200).send(del)
     } catch(err) {
-      console.log('** ERROR **: Unknown error on {{../../name}}.delete', err)
+      console.log('** ERROR **: Unknown error on {{../../name}}.deleteOne', err)
+      return res.status(400).send({errors: {unknown: {message: 'Unknown error.'}}})
+    }
+  },
+    {{/if}}
+  {{/each}}
+
+  {{#each this as |entry|}}
+    {{#if (or
+      (or (eq entry.alias 'deletemany') (eq entry.type 'deletemany'))
+      (eq @key 'deletemany'))}}
+  {{@key}}: async (req, res, next) => {
+    try {
+      let  query = req.query
+      {{> buildAPI_authPartial entry}}
+      {{> buildAPI_preQuery settings=(buildAPI_mergeSettings ../../querySettings entry)}}
+      let { filter } = aqp(query);
+      {{#if entry.filters}}
+      filter = {
+        ...filter,
+        {{#each entry.filters}}
+        {{this.field}}: {{this.value}}
+        {{/each}}
+      }
+      {{/if}}
+      const del = await {{../../name}}.deleteMany(filter)
+
+      return res.status(200).send(del)
+    } catch(err) {
+      console.log('** ERROR **: Unknown error on {{../../name}}.deleteMany', err)
       return res.status(400).send({errors: {unknown: {message: 'Unknown error.'}}})
     }
   },

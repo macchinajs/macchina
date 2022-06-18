@@ -6,6 +6,13 @@ import {
   copyFolder
 } from '../services/fileUtils.js'
 
+const http_types = [
+  'get',
+  'post',
+  'put',
+  'patch',
+  'delete',
+]
 
 // utils
 ///////////////////////////////////////////////////////////////////////////////
@@ -394,20 +401,44 @@ body = {
 
 // exports
 ///////////////////////////////////////////////////////////////////////////////
-export default function compileAPIs(apis, clientBase, serverBase) {
+export default function compileAPIs(apis, schemas, clientBase, serverBase) {
   try {
     let routerEntries = []
     let models = []
     let controllers = []
+
+    let baseQuerySettings = {}
+    let baseData = {}
+    if (apis['_macchinaBase']) {
+      if (apis['_macchinaBase']['query']) {
+        baseQuerySettings = apis['_macchinaBase']['query']
+      }
+      if (apis['_macchinaBase']['endpoints']) {
+        baseData = apis['_macchinaBase']['endpoints']
+      }
+      delete apis['_macchinaBase']
+    }
+
     for (let modelName in apis) {
-      let api = {}
-      let querysettings = {}
+      let api = baseData
+      let querysettings = baseQuerySettings
+
+      if (!schemas[modelName]) {
+        api = {}
+        querysettings = {}
+      }
       if (apis[modelName]['endpoints']) {
         models.push({name: modelName})
 
-        api = apis[modelName]['endpoints']
+        api = {
+          ...api,
+          ...apis[modelName]['endpoints'],
+        }
         if (apis[modelName]['endpoints']) {
-          querysettings = apis[modelName]['query']
+          querysettings = {
+            ...querysettings,
+            ...apis[modelName]['query'],
+          }
         }
       } else {
         continue
@@ -422,16 +453,22 @@ export default function compileAPIs(apis, clientBase, serverBase) {
         }
         if (obj.data.auth || obj.data.login) {
           if (obj.data.middlewares) {
-            obj.data.middlewares = ['auth'].concat(obj.data.middlewares)
+            if (!obj.data.middlewares.includes('auth')) {
+              obj.data.middlewares = ['auth'].concat(obj.data.middlewares)
+            }
           } else {
             obj.data.middlewares = ['auth']
           }
         }
 
-        if (key == 'find' || key == 'findone') {
+        if (obj.data.type && http_types.includes(obj.data.type)) {
+          obj.type = obj.data.type
+        }
+
+        if (key == 'find' || key == 'findone' || key == 'count') {
           obj.type = 'get'
         }
-        if (obj.data.alias && (obj.data.alias == 'find') || (obj.data.alias == 'findone')) {
+        if (obj.data.alias && (obj.data.alias == 'find') || (obj.data.alias == 'findone') || (obj.data.alias == 'count')) {
           obj.type = 'get'
         }
 
@@ -452,7 +489,9 @@ export default function compileAPIs(apis, clientBase, serverBase) {
       if (Object.keys(api).length > 0) {
         let file_loc = new URL('../templates/api.hbs', import.meta.url)
         const apiTemplate = fs.readFileSync(file_loc, 'utf8');
-        createDirIfNone(serverBase+'.macchina/models/'+modelName)
+        // let swagger_tpl_file = new URL('../templates/swagger.hbs', import.meta.url)
+        // const swaggerTemplate = fs.readFileSync(swagger_tpl_file, 'utf8');
+        // createDirIfNone(serverBase+'.macchina/models/'+modelName)
 
         if (hasDefaultEntries(api)) {
           const compiledApiTpl = Handlebars.compile(apiTemplate, { noEscape: true });
@@ -463,8 +502,10 @@ export default function compileAPIs(apis, clientBase, serverBase) {
             name: modelName,
             default: true
           })
-          // console.log("DEFAUL ENTRIES:", api)
-        } else {
+
+          // const compiledSwaggerApiTpl = Handlebars.compile(swaggerTemplate, { noEscape: true });
+          // const swaggerOut = compiledSwaggerApiTpl({name: modelName, apiEntries: api, querySettings: querysettings})
+          // fs.writeFileSync(serverBase+'.macchina/models/'+modelName+'/swagger.yaml', swaggerOut);
         }
 
         const apiHooks = './models/'+modelName+'/apiHooks.js'

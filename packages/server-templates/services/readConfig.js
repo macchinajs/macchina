@@ -11,6 +11,16 @@ export function readSchemas() {
   try {
     const baseFolder = './models/';
     const dirs = getDirectories(baseFolder)
+
+    try {
+      const schemafile = baseFolder+'/schema.yaml'
+      if (fs.existsSync(schemafile)) {
+        const schema = yaml.load(fs.readFileSync(schemafile, 'utf8'));
+        schemas['_macchinaBase'] = schema
+      }
+    } catch(err) {
+      console.log('**ERROR**: API YAML read error:',err)
+    }
     for (let dir of dirs) {
       try {
         const schemafile = baseFolder+dir+'/schema.yaml'
@@ -38,13 +48,22 @@ export function readAPIs() {
   try {
     const baseFolder = './models/';
     const dirs = getDirectories(baseFolder)
+
+    try {
+      const apipath= baseFolder+'/api.yaml'
+      if (fs.existsSync(apipath)) {
+        const api = yaml.load(fs.readFileSync(apipath, 'utf8'));
+        apis['_macchinaBase'] = api
+      }
+    } catch(err) {
+      console.log('**ERROR**: API YAML read error:',err)
+    }
     for (let dir of dirs) {
       try {
         const apipath= baseFolder+dir+'/api.yaml'
         if (fs.existsSync(apipath)) {
-          const schema = yaml.load(fs.readFileSync(apipath, 'utf8'));
-          apis[dir] = schema
-          // console.log('YAML:', schema);
+          const api = yaml.load(fs.readFileSync(apipath, 'utf8'));
+          apis[dir] = api
         }
       } catch(err) {
         console.log('**ERROR**: API YAML read error:',err)

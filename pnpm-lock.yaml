@@ -230,6 +230,8 @@ importers:
       netjet: ^1.4.0
       passport: ^0.4.1
       passport-jwt: ^4.0.0
+      swagger-autogen: ^2.21.3
+      swagger-ui-express: ^4.4.0
       typescript: ^4.7.3
     dependencies:
       '@vendia/serverless-express': 4.8.2
@@ -250,9 +252,11 @@ importers:
       netjet: 1.4.0
       passport: 0.4.1
       passport-jwt: 4.0.0
+      swagger-ui-express: 4.4.0_express@4.18.1
     devDependencies:
       '@types/express': 4.17.13
       '@types/node': 17.0.42
+      swagger-autogen: 2.21.3
       typescript: 4.7.3
 
   packages/server-templates:
@@ -8795,6 +8799,29 @@ packages:
       picocolors: 1.0.0
       stable: 0.1.8
     dev: true
+
+  /swagger-autogen/2.21.3:
+    resolution: {integrity: sha512-i0m5SzEp6Y7J/kB89v11mQhbeCnDp3FA+wPTXeA5PvGFHGt9SvfBmYRaQMvTrKpW515eXoD1YJtWp5jOjKfdwg==}
+    dependencies:
+      acorn: 7.4.1
+      deepmerge: 4.2.2
+      glob: 7.2.3
+      json5: 2.2.1
+    dev: true
+
+  /swagger-ui-dist/4.12.0:
+    resolution: {integrity: sha512-B0Iy2ueXtbByE6OOyHTi3lFQkpPi/L7kFOKFeKTr44za7dJIELa9kzaca6GkndCgpK1QTjArnoXG+aUy0XQp1w==}
+    dev: false
+
+  /swagger-ui-express/4.4.0_express@4.18.1:
+    resolution: {integrity: sha512-1CzRkHG386VQMVZK406jcpgnW2a9A5A/NiAjKhsFTQqUBWRF+uGbXTU/mA7WSV3mTzyOQDvjBdWP/c2qd5lqKw==}
+    engines: {node: '>= v0.10.32'}
+    peerDependencies:
+      express: '>=4.0.0'
+    dependencies:
+      express: 4.18.1
+      swagger-ui-dist: 4.12.0
+    dev: false
 
   /symbol-observable/1.2.0:
     resolution: {integrity: sha512-e900nM8RRtGhlV36KGEU9k65K3mPb1WV70OdjfxlG2EAuM1noi/E/BaW/uMhL7bPEssK8QV57vN3esixjUvcXQ==}

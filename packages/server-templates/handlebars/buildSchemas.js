@@ -544,22 +544,27 @@ export default function compileSchemas(schemas, clientBase, serverBase) {
   let mongooseSchemas = {}
   let validationSchemas = {}
 
+  let baseSchema = {}
+  if (schemas['_macchinaBase']) {
+    if (schemas['_macchinaBase']['Base']) {
+      baseSchema = schemas['_macchinaBase']['Base']
+    }
+    delete schemas['_macchinaBase']
+  }
+
   try {
     for (let modelName in schemas) {
       let schema = schemas[modelName]
-//       let schemaEntries = []
-//       for (let key in schema['schema']) {
-//         let entry = schema['schema'][key]
-//
-//         schemaEntries.push({
-//           name: key,
-//           data: entry
-//         })
-//       }
-//       if (schemaEntries.length == 0) {
-//         // console.log('no entries for:', modelName)
-//         continue
-//       }
+
+      for (let key in schema) {
+        if (key == 'imports') {
+          continue
+        }
+        schema[key] = {
+          ...baseSchema,
+          ...schema[key]
+        }
+      }
 
       let file_loc = new URL('../templates/schema.hbs', import.meta.url)
       const schemaTemplate = fs.readFileSync(file_loc, 'utf8');

@@ -29,6 +29,7 @@
     reader.readAsDataURL(image);
     reader.onload = async e => {
       formInput.img = e.target.result
+      console.log('asdf')
     };
   }
 
