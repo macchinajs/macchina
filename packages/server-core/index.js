@@ -2,6 +2,7 @@ import dayjs from "dayjs"
 import chalk from "chalk"
 import dotenv from 'dotenv'
 import serverlessExpress from "@vendia/serverless-express"
+import websockets from './src/ws/websockets.js'
 
 import connectToDB from "./db/mongo.js"
 import createApp from "./src/express.js"
@@ -41,6 +42,8 @@ export function makeHandler(server, router, services, options) {
         console.log(`Example app listening at http://localhost:${PORT}`)
       })
     }
+
+    websockets(server)
     // app = middy(app).use(cors())
   }
 }
