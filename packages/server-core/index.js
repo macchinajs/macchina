@@ -2,13 +2,15 @@ import dayjs from "dayjs"
 import chalk from "chalk"
 import dotenv from 'dotenv'
 import serverlessExpress from "@vendia/serverless-express"
-import websockets from './src/ws/websockets.js'
+import cluster from 'node:cluster';
+import { cpus } from 'node:os';
 
 import connectToDB from "./db/mongo.js"
 import createApp from "./src/express.js"
 import path from 'path'
 
 const PORT = 4000
+const totalCPUs = cpus().length;
 
 try {
   dotenv.config({ path: `.env.${process.env.NODE_ENV}` })
@@ -18,32 +20,49 @@ try {
 
 export function makeHandler(server, router, services, options) {
   return async function startApp(mongoose, local=false, ...args) {
-    console.log("\n")
-    console.log(
-      chalk.bold(
-        `---------------------[ Server starting at ${dayjs().format(
-          "YYYY-MM-DD HH:mm:ss.SSS"
-        )} ]---------------------------`
-      )
-    )
+    if (process.env.CLUSTER_MODE && cluster.isPrimary) {
+      console.log(`Number of CPUs is ${totalCPUs}`);
+      console.log(`Master ${process.pid} is running`);
 
-    // Create express app and connect to db
-    let connection = connectToDB(mongoose)
-    connection = await connection
-    console.log('Connected to DB')
-    let app = await createApp(server, router, services, options)
+      // Fork workers.
+      for (let i = 0; i < totalCPUs; i++) {
+        cluster.fork();
+      }
 
-    if (!local) {
-      app = serverlessExpress({app})
-      console.log("Connected!")
-      return app(...args)
+      cluster.on("exit", (worker, code, signal) => {
+        console.log(`worker ${worker.process.pid} died`);
+        console.log("Let's fork another worker!");
+        cluster.fork();
+      });
     } else {
-      app.listen(PORT, () => {
-        console.log(`Example app listening at http://localhost:${PORT}`)
-      })
+      console.log("\n")
+      console.log(
+        chalk.bold(
+          `---------------------[ Server starting at ${dayjs().format(
+            "YYYY-MM-DD HH:mm:ss.SSS"
+          )} ]---------------------------`
+        )
+      )
+
+      // Create express app and connect to db
+      let connection = connectToDB(mongoose)
+      connection = await connection
+      console.log('Connected to DB')
+
+      let app = await createApp(server, router, services, options)
+      console.log(`Worker ${process.pid} started`);
+
+      if (!local) {
+        app = serverlessExpress({app})
+        console.log("Connected!")
+        return app(...args)
+      } else {
+        app.listen(PORT, () => {
+          console.log(`Example app (pid:${process.pid}) listening at http://localhost:${PORT}`)
+        })
+      }
     }
 
-    websockets(server)
     // app = middy(app).use(cors())
   }
 }

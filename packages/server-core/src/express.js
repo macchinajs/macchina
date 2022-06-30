@@ -1,4 +1,4 @@
-import express     from 'express'
+import uExpress from '@macchina/uexpress'
 import { middleware } from './http/middleware.js'
 
 const createApp = async (router, services, options) => {
@@ -13,13 +13,11 @@ const createApp = async (router, services, options) => {
   }
 
   console.log('Initializing express...')
-  const app = express()
+  const app = new uExpress()
 
   await middleware(app, services, whitelist)
-  console.log('Express init done.')
-
-
   router(app)
+  console.log('Express init done.')
 
   // server.applyMiddleware({ app, path: '/gql' });
 

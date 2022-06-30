@@ -1,0 +1,23 @@
+{
+  "name": "@macchina/uexpress",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/macchinajs/uexpress.git",
+    "directory": "packages/uexpress"
+  },
+  "version": "0.0.1",
+  "description": "uWebSockets.js based express-like server",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {},
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [],
+  "author": "Francisco Aboim",
+  "license": "CC",
+  "dependencies": {
+    "regexparam": "^2.0.0",
+    "uWebSockets.js": "github:uNetworking/uWebSockets.js#v20.10.0"
+  }
+}

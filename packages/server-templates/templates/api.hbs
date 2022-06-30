@@ -32,10 +32,10 @@ const methods = {
 
       const created = await new {{../../name}}(body).save()
 
-      return res.status(200).send(created.toObject())
+      res.send(created.toObject())
     } catch(err) {
       console.log('** ERROR **: Unknown error on {{../../name}}.create', err)
-      return res.status(400).send({errors: {unknown: {message: 'Unknown error.'}}})
+      res.send({errors: {unknown: {message: 'Unknown error.'}}}, '400')
     }
   },
     {{/if}}
@@ -48,9 +48,9 @@ const methods = {
   {{@key}}: async (req, res, next) => {
     try {
       let  query = req.query
+      let { filter,skip,limit,sort,projection,population } = aqp(query);
       {{> buildAPI_authPartial entry}}
       {{> buildAPI_preQuery settings=(buildAPI_mergeSettings ../../querySettings entry)}}
-      let { filter,skip,limit,sort,projection,population } = aqp(query);
       {{> buildAPI_postQuery settings=(buildAPI_mergeSettings ../../querySettings entry)}}
       {{#if entry.filters}}
       filter = {
@@ -79,10 +79,10 @@ const methods = {
         {{/buildAPI_useField}}
         .lean()
 
-      return res.status(200).send(found)
+      res.send(found)
     } catch(err) {
       console.log('** ERROR **: Unknown error on {{../../name}}.find', err)
-      return res.status(400).send({errors: {unknown: {message: 'Unknown error.'}}})
+      res.send({errors: {unknown: {message: 'Unknown error.'}}}, '400')
     }
   },
     {{/if}}
@@ -96,9 +96,9 @@ const methods = {
     try {
       let query     = req.query
       let queryKeys = Object.keys(query)
+      let { filter,skip,limit,sort,projection,population } = aqp(query);
       {{> buildAPI_authPartial entry}}
       {{> buildAPI_preQuery settings=(buildAPI_mergeSettings ../../querySettings entry)}}
-      let { filter,projection,population } = aqp(query);
       {{> buildAPI_postQuery settings=(buildAPI_mergeSettings ../../querySettings entry)}}
       {{#if entry.filters}}
       filter = {
@@ -118,12 +118,12 @@ const methods = {
                                      .lean()
 
       if (found == undefined) {
-        return res.status(400).send({errors: {unknown: {message: 'Not found.'}}})
+        res.send({errors: {unknown: {message: 'Not found.'}}}, '400')
       }
-      return res.status(200).send(found)
+      res.send(found)
     } catch(err) {
       console.log('** ERROR **: Unknown error on {{../../name}}.findone', err)
-      return res.status(400).send({errors: {unknown: {message: 'Unknown error.'}}})
+      res.send({errors: {unknown: {message: 'Unknown error.'}}}, '400')
     }
   },
     {{/if}}
@@ -139,18 +139,18 @@ const methods = {
       let  bodyKeys = Object.keys(body)
       let query     = req.query
       let queryKeys = Object.keys(query)
+      let { filter,skip,limit,sort,projection,population } = aqp(query);
       {{> buildAPI_authPartial entry}}
       {{> buildAPI_preAllow entry}}
       {{> buildAPI_preDeny entry}}
       {{> buildAPI_preSet entry}}
       {{> buildAPI_preQuery settings=(buildAPI_mergeSettings ../../querySettings entry)}}
-      let { filter } = aqp(req.query);
       const updated = await {{../../name}}.update(filter, body)
 
-      return res.status(200).send(updated)
+      res.send(updated)
     } catch(err) {
       console.log('** ERROR **: Unknown error on {{../../name}}.update', err)
-      return res.status(400).send({errors: {unknown: {message: 'Unknown error.'}}})
+      res.send({errors: {unknown: {message: 'Unknown error.'}}}, '400')
     }
   },
     {{/if}}
@@ -164,9 +164,9 @@ const methods = {
   {{@key}}: async (req, res, next) => {
     try {
       let  query = req.query
+      let { filter,skip,limit,sort,projection,population } = aqp(query);
       {{> buildAPI_authPartial entry}}
       {{> buildAPI_preQuery settings=(buildAPI_mergeSettings ../../querySettings entry)}}
-      let { filter } = aqp(query);
       {{#if entry.filters}}
       filter = {
         ...filter,
@@ -178,10 +178,10 @@ const methods = {
 
       const count = await {{../../name}}.count(filter)
 
-      return res.status(200).send({count})
+      res.send({count})
     } catch(err) {
       console.log('** ERROR **: Unknown error on {{../../name}}.count', err)
-      return res.status(400).send({errors: {unknown: {message: 'Unknown error.'}}})
+      res.send({errors: {unknown: {message: 'Unknown error.'}}}, '400')
     }
   },
     {{/if}}
@@ -194,9 +194,9 @@ const methods = {
   {{@key}}: async (req, res, next) => {
     try {
       let  query = req.query
+      let { filter,skip,limit,sort,projection,population } = aqp(query);
       {{> buildAPI_authPartial entry}}
       {{> buildAPI_preQuery settings=(buildAPI_mergeSettings ../../querySettings entry)}}
-      let { filter } = aqp(query);
       {{#if entry.filters}}
       filter = {
         ...filter,
@@ -207,10 +207,10 @@ const methods = {
       {{/if}}
       const del = await {{../../name}}.deleteOne(filter)
 
-      return res.status(200).send(del)
+      res.send(del)
     } catch(err) {
       console.log('** ERROR **: Unknown error on {{../../name}}.deleteOne', err)
-      return res.status(400).send({errors: {unknown: {message: 'Unknown error.'}}})
+      res.send({errors: {unknown: {message: 'Unknown error.'}}}, '400')
     }
   },
     {{/if}}
@@ -223,9 +223,9 @@ const methods = {
   {{@key}}: async (req, res, next) => {
     try {
       let  query = req.query
+      let { filter,skip,limit,sort,projection,population } = aqp(query);
       {{> buildAPI_authPartial entry}}
       {{> buildAPI_preQuery settings=(buildAPI_mergeSettings ../../querySettings entry)}}
-      let { filter } = aqp(query);
       {{#if entry.filters}}
       filter = {
         ...filter,
@@ -236,10 +236,10 @@ const methods = {
       {{/if}}
       const del = await {{../../name}}.deleteMany(filter)
 
-      return res.status(200).send(del)
+      res.send(del)
     } catch(err) {
       console.log('** ERROR **: Unknown error on {{../../name}}.deleteMany', err)
-      return res.status(400).send({errors: {unknown: {message: 'Unknown error.'}}})
+      res.send({errors: {unknown: {message: 'Unknown error.'}}}, '400')
     }
   },
     {{/if}}

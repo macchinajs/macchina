@@ -282,33 +282,33 @@ for (let key of requiredVals) {
 {{#if this.setFields}}
 {{#each this.setFields}}
 {{#each this}}
-query["{{@key}}"] = {{this}}
+{{@key}} = {{this}}
 {{/each}}
 {{/each}}
 {{/if}}
 {{/ifCond}}
 {{#buildAPI_isNumQuery @key}}
 {{#if this.min}}
-if (query['{{@key}}'] && query['{{@key}}'] < {{this.min}}) {
+if ({{@key}} && {{@key}} < {{this.min}}) {
   return res.status(400).send({errors: {auth: {message: 'Query param:{{@key}} below minimum'}}})
 }
 {{/if}}
 {{#if this.max}}
 //max
-if (query['{{@key}}'] && query['{{@key}}'] > {{this.max}}) {
+if ({{@key}} && {{@key}} > {{this.max}}) {
   return res.status(400).send({errors: {auth: {message: 'Query param:{{@key}} above maximum'}}})
 }
 {{/if}}
 {{#if this.default}}
-if (!query['{{@key}}']) {
-  query['{{@key}}'] = {{this.default}}
+if (!{{@key}}) {
+  {{@key}} = {{this.default}}
 }
 {{/if}}
 {{/buildAPI_isNumQuery}}
 {{#ifCond @key '==' 'sort'}}
 {{#if this.default}}
-if (!query['{{@key}}']) {
-  query['{{@key}}'] = {{json this.default}}
+if (!{{@key}}) {
+  {{@key}} = {{json this.default}}
 }
 {{/if}}
 {{/ifCond}}
