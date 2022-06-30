@@ -41,12 +41,12 @@ export default class Router {
       // console.log("ROUTE:", route)
       if (route.method.length === 0 || route.method === method || isHEAD && route.method === 'get') {
         if (route.keys === false) {
-          matches = route.pattern.exec(url);
+          const matches = route.pattern.exec(url);
           if (matches === null) continue;
           if (matches.groups !== void 0) for (k in matches.groups) params[k]=matches.groups[k];
           route.handlers.length > 1 ? (handlers=handlers.concat(route.handlers)) : handlers.push(route.handlers[0]);
         } else if (route.keys.length > 0) {
-          matches = route.pattern.exec(url);
+          const matches = route.pattern.exec(url);
           if (matches === null) continue;
           route.handlers.length > 1 ? (handlers=handlers.concat(route.handlers)) : handlers.push(route.handlers[0]);
         } else if (route.pattern.test(url)) {

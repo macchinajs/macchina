@@ -41,14 +41,14 @@ export const middleware = async (app, services, whitelist) => {
     next()
   }
 
-  try {
-    await genSwaggerDocs()
-    const swaggerFile = JSON.parse(fs.readFileSync('./swagger-output.json'));
-    app.use('/docs', swaggerUi.serve)
-    app.get('/docs', swaggerUi.setup(swaggerFile));
-  } catch(e) {
-    console.log("swagger docs generation error", e)
-  }
+  // try {
+  //   await genSwaggerDocs()
+  //   const swaggerFile = JSON.parse(fs.readFileSync('./swagger-output.json'));
+  //   app.use('/docs', swaggerUi.serve)
+  //   app.get('/docs', swaggerUi.setup(swaggerFile));
+  // } catch(e) {
+  //   console.log("swagger docs generation error", e)
+  // }
 
 
   // Force https in production

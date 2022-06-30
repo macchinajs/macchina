@@ -22,6 +22,11 @@ function onError(err, req, res, next) {
   else res.end(err.message || http.STATUS_CODES[code])
 }
 
+function readJson(res, cb, err) {
+  /* Register error cb */
+  res.onAborted(err);
+}
+
 // Polka based server
 export default class uExpress extends Router {
   constructor(opts={}) {
@@ -109,17 +114,50 @@ export default class uExpress extends Router {
   }
 
   handler(res, req) {
+    console.log("HANDLER")
     res.send = this.sendType
 
     res.onAborted((e) => {
       console.log("ABORTED:", e)
     });
+
+
+    const parseJson = (ab, isLast) => {
+      let buffer;
+      return new Promise((resolve, reject) => {
+        let chunk = Buffer.from(ab);
+        if (isLast) {
+          if (buffer) {
+            resolve(JSON.parse(Buffer.concat([buffer, chunk])));
+          } else {
+            resolve(JSON.parse(chunk));
+          }
+        } else {
+          if (buffer) {
+            buffer = Buffer.concat([buffer, chunk]);
+          } else {
+            buffer = Buffer.concat([chunk]);
+          }
+        }
+      })
+    }
+
+    res.onData(await parseJson);
+
+    if (method !== 'trace' &&
+        req.getHeader('content-type') === 'application/json') {
+      // const json = readJson(res, obj => {
+      //   console.log('ojb:', obj)
+      // })
+    }
+    // console.log("ORIGIN:", req.getHeader('origin'),query, url, params)
+
     // info = info || this.parse(req)
     const query  = req.getQuery()
     const url    = req.getUrl()
     const params = req.getParameter()
     const method = req.getMethod()
-    // console.log("ORIGIN:", req.getHeader('origin'),query, url, params)
+
 
     let fns=[], arr=this.wares, obj=this.find(method, url)
     req.originalUrl = req.originalUrl || req.url

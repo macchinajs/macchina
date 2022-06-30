@@ -1,5 +1,4 @@
 import passport from 'passport'
-import rateLimit from "express-rate-limit"
 
 {{#controllers}}
 {{#if default}}
@@ -12,13 +11,6 @@ import {{name}}Methods from './models/{{name}}/methods.js'
 {{buildAPI_makeController controllers}}
 
 const auth = passport.authenticate("jwt", { session: false })
-
-const apiLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000, // 60 minutes
-  message: {errors: [{username: 'Too many attempts.'}]},
-  max: 20
-});
-
 
 // 3. Routes
 const router = (app) => {
