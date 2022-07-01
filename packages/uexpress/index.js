@@ -22,9 +22,45 @@ function onError(err, req, res, next) {
   else res.end(err.message || http.STATUS_CODES[code])
 }
 
-function readJson(res, cb, err) {
-  /* Register error cb */
-  res.onAborted(err);
+function readJson(res, req) {
+  try {
+    console.log("READ JSON")
+    const parseJson = (ab, isLast) => {
+      let buffer;
+      console.log("AB:", ab)
+      ab = JSON.stringify(ab)
+      const result =  new Promise((resolve, reject) => {
+        let chunk = Buffer.from(ab);
+        if (isLast) {
+          if (buffer) {
+            const parsed = JSON.parse(Buffer.concat([buffer, chunk]))
+            res.body = parsed
+            console.log("SET BODY2:", res.body)
+            resolve(parsed);
+          } else {
+            const parsed = JSON.parse(chunk)
+            res.body = parsed
+            console.log("SET BODY:", res.body)
+            resolve(parsed);
+          }
+        } else {
+          if (buffer) {
+            buffer = Buffer.concat([buffer, chunk]);
+          } else {
+            buffer = Buffer.concat([chunk]);
+          }
+        }
+      })
+    }
+
+    /* Register error cb */
+    res.onAborted((e) => {
+      console.log("ERR:", e)
+    })
+    return res.onData(parseJson);
+  } catch(e) {
+    console.log("READ JSON ERROR:", e)
+  }
 }
 
 // Polka based server
@@ -122,42 +158,13 @@ export default class uExpress extends Router {
     });
 
 
-    const parseJson = (ab, isLast) => {
-      let buffer;
-      return new Promise((resolve, reject) => {
-        let chunk = Buffer.from(ab);
-        if (isLast) {
-          if (buffer) {
-            resolve(JSON.parse(Buffer.concat([buffer, chunk])));
-          } else {
-            resolve(JSON.parse(chunk));
-          }
-        } else {
-          if (buffer) {
-            buffer = Buffer.concat([buffer, chunk]);
-          } else {
-            buffer = Buffer.concat([chunk]);
-          }
-        }
-      })
-    }
-
-    res.onData(await parseJson);
-
-    if (method !== 'trace' &&
-        req.getHeader('content-type') === 'application/json') {
-      // const json = readJson(res, obj => {
-      //   console.log('ojb:', obj)
-      // })
-    }
-    // console.log("ORIGIN:", req.getHeader('origin'),query, url, params)
-
     // info = info || this.parse(req)
     const query  = req.getQuery()
     const url    = req.getUrl()
     const params = req.getParameter()
     const method = req.getMethod()
 
+    const contentType = req.getHeader('content-type')
 
     let fns=[], arr=this.wares, obj=this.find(method, url)
     req.originalUrl = req.originalUrl || req.url
@@ -176,7 +183,7 @@ export default class uExpress extends Router {
     // Grab addl values from `info`
     req.search = ''
     req.query = query
-    // console.log("PARSED QUERY:", req.query, fns)
+
     // Exit if only a single function
     let i=0, len=arr.length, num=fns.length
     if (len === i && num === 1) return fns[0](req, res)
